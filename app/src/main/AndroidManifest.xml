@@ -13,6 +13,33 @@
         android:theme="@style/Theme.NutriGrow"
         tools:targetApi="31">
         <activity
+            android:name=".ui.aigrow.detail.DetailAIGrowActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.aigrow.AIGrowActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.plantplan.detail.DetailPlantPlanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.community.create.CreateCommunityPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.community.detail.DetailCommunityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.article.detail.DetailArticleFragment"
+            android:exported="false" />
+        <activity
+            android:name=".ui.plantplan.create.CreatePlantPlanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.AuthActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name">
