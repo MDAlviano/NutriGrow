@@ -1,4 +1,6 @@
 package com.alvin.nutrigrow.ui.article
 
-class ArticleViewModel {
+import androidx.lifecycle.ViewModel
+
+class ArticleViewModel : ViewModel() {
 }

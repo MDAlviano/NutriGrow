@@ -1,4 +1,6 @@
 package com.alvin.nutrigrow.ui.aigrow
 
-class AIGrowViewModel {
+import androidx.lifecycle.ViewModel
+
+class AIGrowViewModel : ViewModel() {
 }

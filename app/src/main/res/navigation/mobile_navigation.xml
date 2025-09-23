@@ -12,14 +12,27 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.alvin.nutrigrow.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_plantplan"
+        android:name="com.alvin.nutrigrow.ui.plantplan.PlantPlanFragment"
+        android:label="PlantPlan"
+        tools:layout="@layout/fragment_plant_plan" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.alvin.nutrigrow.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_article"
+        android:name="com.alvin.nutrigrow.ui.article.ArticleFragment"
+        android:label="Article"
+        tools:layout="@layout/fragment_article"/>
+
+    <fragment
+        android:id="@+id/navigation_community"
+        android:name="com.alvin.nutrigrow.ui.community.CommunityFragment"
+        android:label="Community"
+        tools:layout="@layout/fragment_community"/>
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.alvin.nutrigrow.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile"/>
+
 </navigation>

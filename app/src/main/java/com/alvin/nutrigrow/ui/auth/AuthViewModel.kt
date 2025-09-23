@@ -1,4 +1,6 @@
 package com.alvin.nutrigrow.ui.auth
 
-class AuthViewModel {
+import androidx.lifecycle.ViewModel
+
+class AuthViewModel : ViewModel() {
 }
