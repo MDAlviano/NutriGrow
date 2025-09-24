@@ -5,4 +5,11 @@
     <string name="title_notifications">Notifications</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- string resources -->
+    <string name="auth_activity1">Buat rencana menanam dan pastikan tanamanmu aman dengan NutriGrow!</string>
+    <string name="auth_activity2">Bergabunglah dengan kami sekarang juga!</string>
+    <string name="auth_activity3">Login dengan Akun Google</string>
+    <string name="auth_activity4">Dengan bergabung, artinya kamu telah menyetujui Syarat dan Ketentuan kami.</string>
+
 </resources>
