@@ -12,4 +12,5 @@
     <string name="auth_activity3">Login dengan Akun Google</string>
     <string name="auth_activity4">Dengan bergabung, artinya kamu telah menyetujui Syarat dan Ketentuan kami.</string>
 
+    <string name="aigrow_activity2">Masukkan gambar daun dari tumbuhanmu, AIGrow akan menganalisis kondisi tumbuhanmu dan memberikan rekomendasi untuk tumbuhanmu!</string>
 </resources>
