@@ -13,4 +13,7 @@
     <string name="auth_activity4">Dengan bergabung, artinya kamu telah menyetujui Syarat dan Ketentuan kami.</string>
 
     <string name="aigrow_activity2">Masukkan gambar daun dari tumbuhanmu, AIGrow akan menganalisis kondisi tumbuhanmu dan memberikan rekomendasi untuk tumbuhanmu!</string>
+
+    <string name="profile_fragment1">My Post</string>
+    <string name="profile_fragment2">My Diagnosis</string>
 </resources>

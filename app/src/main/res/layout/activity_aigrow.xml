@@ -80,7 +80,8 @@
                 android:id="@+id/imgAIPosted"
                 android:layout_width="150dp"
                 android:layout_height="100dp"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true"
+                android:scaleType="centerCrop"/>
 
         </RelativeLayout>
 

@@ -23,7 +23,9 @@
                 android:id="@+id/imgDetailAIPosted"
                 android:layout_width="150dp"
                 android:layout_height="100dp"
-                android:layout_alignParentEnd="true"/>
+                android:scaleType="centerCrop"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="img"/>
 
         </RelativeLayout>
 
