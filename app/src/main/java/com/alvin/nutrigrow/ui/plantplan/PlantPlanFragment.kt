@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.databinding.FragmentPlantPlanBinding
 
@@ -25,6 +26,9 @@ class PlantPlanFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.fabCreatePlantPlan.setOnClickListener {
+            Navigation.createNavigateOnClickListener(R.id.action_navigation_plantplan_to_navigation_create_plant_plan_activity2)
+        }
     }
 
     override fun onDestroy() {

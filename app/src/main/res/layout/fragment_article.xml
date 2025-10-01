@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,9 +11,12 @@
         android:id="@+id/svArticle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:iconifiedByDefault="true"
         android:queryHint="Search Article.."
-        android:layout_alignParentTop="true" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/filter"
@@ -20,7 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        android:layout_below="@+id/svArticle">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/svArticle">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnArticleFilterTips"
@@ -29,8 +35,8 @@
             android:layout_marginLeft="8dp"
             android:text="Tips and Trick"
             android:textAllCaps="false"
-            android:textSize="11sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="11sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnArticleFilterTrend"
@@ -39,8 +45,8 @@
             android:layout_marginLeft="8dp"
             android:text="Trend"
             android:textAllCaps="false"
-            android:textSize="11sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="11sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnArticleFilterTRecommendation"
@@ -49,8 +55,8 @@
             android:layout_marginLeft="8dp"
             android:text="Recommendation"
             android:textAllCaps="false"
-            android:textSize="11sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="11sp" />
 
     </LinearLayout>
 
@@ -59,6 +65,20 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_below="@id/filter" />
+        app:layout_constraintTop_toBottomOf="@id/filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-</RelativeLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:progressTint="@color/primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
