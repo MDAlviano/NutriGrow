@@ -64,4 +64,10 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database) // Untuk Realtime DB forum
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.functions) // Untuk cuaca
 }
