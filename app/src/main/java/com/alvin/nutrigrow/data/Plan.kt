@@ -6,11 +6,12 @@ import java.util.Date
 
 @Parcelize
 data class Plan(
-    val id: Int,
+    val id: String,
+    val userId: String,
     val name: String,
     val growingMedia: String,
     val plant: String,
-    val day: String,
+    val day: Int,
     val condition: String,
-    val created: Date
+    val createdAt: Date
 ): Parcelable

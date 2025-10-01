@@ -5,6 +5,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Progress(
-    val id: Int,
-    val day: Int
+    val id: String,
+    val plantPlanId: String,
+    val day: Int,
+    val imageUrl: String,
+    val response: String,
 ): Parcelable
