@@ -4,10 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Article(
+data class Progress(
     val id: Int,
-    val imageUrl: String,
-    val date: String,
-    val title: String,
-    val content: String,
+    val day: Int
 ): Parcelable

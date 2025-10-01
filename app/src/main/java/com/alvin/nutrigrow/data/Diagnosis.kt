@@ -4,10 +4,10 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Article(
+data class Diagnosis(
     val id: Int,
-    val imageUrl: String,
-    val date: String,
     val title: String,
-    val content: String,
+    val date: String,
+    val imageUrl: String,
+    val response: String
 ): Parcelable
