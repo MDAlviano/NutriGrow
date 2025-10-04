@@ -14,6 +14,8 @@ class DetailCommunityActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
+        
         binding = ActivityCommunityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
