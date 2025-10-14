@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.alvin.nutrigrow.data.CommunityPost
+import com.alvin.nutrigrow.data.Diagnosis
 import com.alvin.nutrigrow.databinding.FragmentMyDiagnosisBinding
 
 class MyDiagnosisFragment : Fragment() {
@@ -25,6 +27,7 @@ class MyDiagnosisFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setDiagnosis()
     }
 
     override fun onDestroy() {
@@ -32,4 +35,14 @@ class MyDiagnosisFragment : Fragment() {
         _binding = null
     }
 
+    private fun setDiagnosis() {
+        val diagnosis = mutableListOf<Diagnosis>()
+        if (diagnosis.isEmpty()) {
+            binding.tvMydiagnosisnone.visibility = View.VISIBLE
+            binding.rvMyDiagnosis.visibility = View.GONE
+        } else {
+            binding.tvMydiagnosisnone.visibility = View.GONE
+            binding.rvMyDiagnosis.visibility = View.VISIBLE
+        }
+    }
 }

@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="165dp"
         android:contentDescription="bg"
         android:scaleType="centerCrop"
         android:src="@drawable/ntg_bg_home"
@@ -30,6 +30,7 @@
             android:id="@+id/statsCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
             android:layout_alignParentTop="true"
             android:background="@color/white"
             android:translationZ="4dp"
@@ -105,7 +106,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="29 C"
+                        android:text="29° C"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -145,13 +146,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                android:id="@+id/groupNone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Belum ada rencana menanam"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnToCreatePlant"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Buat disini!"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"/>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/continuePlantPlanSection"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:orientation="vertical">
 
             <TextView
@@ -167,6 +192,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/tvArticleNone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"
+                android:text="Belum ada artikel"/>
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -179,7 +212,8 @@
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/primary"
             android:contentDescription="fabToAIGrow"
-            android:src="@drawable/baseline_add_24" />
+            android:tint="@color/white"
+            android:src="@drawable/ntb_aigrow" />
 
     </RelativeLayout>
 

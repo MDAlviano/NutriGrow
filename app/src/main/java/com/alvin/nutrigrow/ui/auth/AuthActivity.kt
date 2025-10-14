@@ -27,6 +27,7 @@ class AuthActivity : AppCompatActivity() {
             Snackbar.make(binding.root, "Are you sure?", Snackbar.LENGTH_SHORT).setAction("Yes") {
                 Intent(this, MainActivity::class.java).also {
                     startActivity(it)
+                    finish()
                 }
             }.show()
         }

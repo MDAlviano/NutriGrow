@@ -6,7 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.alvin.nutrigrow.ui.profile.tabs.MyDiagnosisFragment
 import com.alvin.nutrigrow.ui.profile.tabs.MyPostFragment
 
-class SectionsPageAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+class SectionsPageAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     private val listFragment = listOf<Fragment>(
         MyPostFragment(), MyDiagnosisFragment()
@@ -18,6 +18,6 @@ class SectionsPageAdapter(activity: AppCompatActivity) : FragmentStateAdapter(ac
     }
 
     override fun getItemCount(): Int {
-        return 2
+        return listFragment.size
     }
 }

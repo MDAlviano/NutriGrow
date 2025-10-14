@@ -40,7 +40,16 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sectionsPageAdapter = SectionsPageAdapter(requireActivity() as AppCompatActivity)
+        setTabLayout()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    private fun setTabLayout() {
+        val sectionsPageAdapter = SectionsPageAdapter(this)
         val profileViewPager: ViewPager2 = binding.profileViewPager
         profileViewPager.adapter = sectionsPageAdapter
 
@@ -48,11 +57,6 @@ class ProfileFragment : Fragment() {
         TabLayoutMediator(profileTabs, profileViewPager) { tab, position ->
             tab.text = resources.getString(TAB_TITLES[position])
         }.attach()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
 }

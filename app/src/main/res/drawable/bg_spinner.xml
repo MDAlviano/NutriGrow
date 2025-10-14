@@ -1,0 +1,17 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background warna -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/primary" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+
+    <!-- Icon dropdown -->
+    <item android:drawable="@android:drawable/arrow_down_float"
+        android:gravity="end|center_vertical"
+        android:width="16dp"
+        android:height="16dp"
+        android:right="12dp"
+        android:tint="@android:color/white" />
+</layer-list>

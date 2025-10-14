@@ -14,6 +14,6 @@
 
     <string name="aigrow_activity2">Masukkan gambar daun dari tumbuhanmu, AIGrow akan menganalisis kondisi tumbuhanmu dan memberikan rekomendasi untuk tumbuhanmu!</string>
 
-    <string name="profile_fragment1">My Post</string>
-    <string name="profile_fragment2">My Diagnosis</string>
+    <string name="profile_fragment1">Postingan</string>
+    <string name="profile_fragment2">Diagnosis</string>
 </resources>

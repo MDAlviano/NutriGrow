@@ -101,9 +101,9 @@
             android:id="@+id/etContentCommunity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="top"
             android:lines="10"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textColor="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

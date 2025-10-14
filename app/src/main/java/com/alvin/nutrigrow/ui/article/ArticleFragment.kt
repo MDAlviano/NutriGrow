@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alvin.nutrigrow.R
+import com.alvin.nutrigrow.data.Article
 import com.alvin.nutrigrow.databinding.FragmentArticleBinding
 
 class ArticleFragment : Fragment() {
@@ -24,11 +25,24 @@ class ArticleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setArticles()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun setArticles() {
+        val articles = mutableListOf<Article>()
+        if (articles.isEmpty()) {
+            binding.tvArticleNone.visibility = View.VISIBLE
+            binding.rvArticle.visibility = View.GONE
+        } else {
+            binding.tvArticleNone.visibility = View.GONE
+            binding.rvArticle.visibility = View.VISIBLE
+        }
     }
 
 }
