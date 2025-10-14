@@ -10,7 +10,12 @@ import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.CommunityPost
 import com.bumptech.glide.Glide
 
-class CommunityPostAdapter(val listPost: List<CommunityPost>, val onClick: (CommunityPost) -> Unit): RecyclerView.Adapter<CommunityPostAdapter.MainViewHolder>() {
+class CommunityPostAdapter(var listPost: List<CommunityPost>, val onClick: (CommunityPost) -> Unit): RecyclerView.Adapter<CommunityPostAdapter.MainViewHolder>() {
+    fun updatePosts(newPosts: List<CommunityPost>) {
+        listPost = newPosts
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

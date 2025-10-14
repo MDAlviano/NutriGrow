@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.CommunityPost
 import com.alvin.nutrigrow.databinding.FragmentCommunityBinding
@@ -16,6 +19,9 @@ class CommunityFragment : Fragment() {
 
     private var _binding: FragmentCommunityBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: CommunityViewModel by viewModels()
+    private lateinit var adapter: CommunityPostAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,8 +36,10 @@ class CommunityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
         setListener()
-        setPost()
+        observeViewModel()
+        viewModel.fetchPosts()
     }
 
     override fun onDestroy() {
@@ -47,14 +55,34 @@ class CommunityFragment : Fragment() {
         }
     }
 
-    private fun setPost() {
-        val post = mutableListOf<CommunityPost>()
-        if (post.isEmpty()) {
-            binding.tvPostNone.visibility = View.VISIBLE
-            binding.rvCommunity.visibility = View.GONE
-        } else {
-            binding.tvPostNone.visibility = View.GONE
-            binding.rvCommunity.visibility = View.VISIBLE
+    private fun setupRecyclerView() {
+        adapter = CommunityPostAdapter(emptyList()) { post ->
+            Toast.makeText(requireContext(), "Clicked: ${post.title}", Toast.LENGTH_SHORT).show()
+        }
+        binding.rvCommunity.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvCommunity.adapter = adapter
+    }
+
+    private fun observeViewModel() {
+        viewModel.posts.observe(viewLifecycleOwner) { posts ->
+            adapter.updatePosts(posts)
+            if (posts.isEmpty()) {
+                binding.tvPostNone.visibility = View.VISIBLE
+                binding.rvCommunity.visibility = View.GONE
+            } else {
+                binding.tvPostNone.visibility = View.GONE
+                binding.rvCommunity.visibility = View.VISIBLE
+            }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), "Error: $it", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

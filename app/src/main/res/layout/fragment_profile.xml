@@ -16,6 +16,7 @@
         android:layout_alignParentTop="true">
 
         <ImageView
+            android:id="@+id/imgUser"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/mangga"
@@ -29,6 +30,7 @@
             android:layout_marginStart="12dp">
 
             <TextView
+                android:id="@+id/tvDisplayName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -37,6 +39,7 @@
                 android:text="Nama Pengguna" />
 
             <TextView
+                android:id="@+id/tvUserDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"

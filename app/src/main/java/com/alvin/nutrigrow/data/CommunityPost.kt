@@ -11,5 +11,5 @@ data class CommunityPost(
     val author: String,
     val title: String,
     val content: String,
-    val replies: Int
+    val replies: Int = 0
 ): Parcelable

@@ -16,4 +16,6 @@
 
     <string name="profile_fragment1">Postingan</string>
     <string name="profile_fragment2">Diagnosis</string>
+
+    <string name="default_web_client_id">69879537681-ta7557mi2q073kssd07el39vo9kdtld4.apps.googleusercontent.com</string>
 </resources>
