@@ -165,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Buat disini!"
+                    android:text="Buat sekarang!"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="12sp"/>

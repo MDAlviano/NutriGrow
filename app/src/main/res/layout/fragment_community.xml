@@ -28,6 +28,7 @@
             android:layout_weight="5"
             android:inputType="text"
             android:hint="Cari postingan..."
+            android:textColor="@color/text"
             android:background="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ivSearch"

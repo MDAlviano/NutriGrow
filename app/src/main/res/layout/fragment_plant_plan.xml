@@ -54,6 +54,7 @@
         android:background="@drawable/bg_spinner"
         android:paddingHorizontal="10dp"
         android:paddingVertical="4dp"
+        android:paddingEnd="28dp"
         android:spinnerMode="dropdown"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sv" />
