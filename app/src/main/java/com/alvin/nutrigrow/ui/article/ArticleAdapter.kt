@@ -10,7 +10,12 @@ import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.Article
 import com.bumptech.glide.Glide
 
-class ArticleAdapter(val articles: List<Article>, val onClick: (Article) -> Unit): RecyclerView.Adapter<ArticleAdapter.MainViewHolder>() {
+class ArticleAdapter(var articles: List<Article>, val onClick: (Article) -> Unit): RecyclerView.Adapter<ArticleAdapter.MainViewHolder>() {
+    fun updateArticles(newArticles: List<Article>) {
+        articles = newArticles
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

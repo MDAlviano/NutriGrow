@@ -11,6 +11,8 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class CommunityViewModel : ViewModel() {
     private val db: FirebaseFirestore = Firebase.firestore
@@ -31,7 +33,21 @@ class CommunityViewModel : ViewModel() {
                 val snapshot = db.collection("Posts").get().await()
                 val postList = snapshot.documents.mapNotNull { document ->
                     try {
-                        document.toObject(CommunityPost::class.java)?.copy(id = document.id)
+                        val post = document.toObject(CommunityPost::class.java)?.copy(id = document.id)
+                        post?.let {
+                            val rawDate = document.getString("createdAt") ?: ""
+                            val formattedDate = try {
+                                val inputFormat =
+                                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                val outputFormat =
+                                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+                                val parsedDate = inputFormat.parse(rawDate)
+                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
+                            } catch (e: Exception) {
+                                rawDate
+                            }
+                            it.copy(date = formattedDate)
+                        }
                     } catch (e: Exception) {
                         null
                     }

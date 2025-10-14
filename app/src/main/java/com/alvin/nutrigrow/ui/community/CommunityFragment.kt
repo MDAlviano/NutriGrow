@@ -14,6 +14,7 @@ import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.CommunityPost
 import com.alvin.nutrigrow.databinding.FragmentCommunityBinding
 import com.alvin.nutrigrow.ui.community.create.CreateCommunityPostActivity
+import com.alvin.nutrigrow.ui.community.detail.DetailCommunityActivity
 
 class CommunityFragment : Fragment() {
 
@@ -57,7 +58,10 @@ class CommunityFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = CommunityPostAdapter(emptyList()) { post ->
-            Toast.makeText(requireContext(), "Clicked: ${post.title}", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), DetailCommunityActivity::class.java).apply {
+                putExtra("POST", post)
+            }
+            startActivity(intent)
         }
         binding.rvCommunity.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCommunity.adapter = adapter
