@@ -1,8 +1,8 @@
 [versions]
 activityKtx = "1.9.2"
 agp = "8.9.1"
-firebaseBom = "33.7.0"
 firebaseAuth = "23.0.0"
+firebaseBom = "34.4.0"
 firebaseFirestore = "24.10.0"
 firebaseDatabase = "21.0.0"
 firebaseStorage = "20.3.0"
