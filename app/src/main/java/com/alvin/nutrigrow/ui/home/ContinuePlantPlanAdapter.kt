@@ -8,7 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.Plan
 
-class ContinuePlantPlanAdapter(val listPlantPlan: List<Plan>, val onClick: (Plan) -> Unit): RecyclerView.Adapter<ContinuePlantPlanAdapter.MainViewHolder>() {
+class ContinuePlantPlanAdapter(var listPlantPlan: List<Plan>, val onClick: (Plan) -> Unit): RecyclerView.Adapter<ContinuePlantPlanAdapter.MainViewHolder>() {
+    fun updatePlans(newPlans: List<Plan>) {
+        listPlantPlan = newPlans
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

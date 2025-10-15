@@ -20,6 +20,9 @@ class ArticleViewModel : ViewModel() {
     private val _articles = MutableLiveData<List<Article>>()
     val articles: LiveData<List<Article>> get() = _articles
 
+    private val _recommendedArticles = MutableLiveData<List<Article>>()
+    val recommendedArticles: LiveData<List<Article>> get() = _recommendedArticles
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
@@ -37,8 +40,10 @@ class ArticleViewModel : ViewModel() {
                         article?.let {
                             val rawDate = document.getString("date") ?: ""
                             val formattedDate = try {
-                                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+                                val inputFormat =
+                                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                val outputFormat =
+                                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
                                 val parsedDate = inputFormat.parse(rawDate)
                                 parsedDate?.let { outputFormat.format(it) } ?: rawDate
                             } catch (e: Exception) {
@@ -51,6 +56,46 @@ class ArticleViewModel : ViewModel() {
                     }
                 }
                 _articles.postValue(articleList)
+                _error.postValue(null)
+            } catch (e: Exception) {
+                _error.postValue(e.message)
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun fetchRecommendedArticles(excludeArticleId: String) {
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val snapshot = db.collection("article")
+                    .whereNotEqualTo("id", excludeArticleId)
+                    .limit(5)
+                    .get()
+                    .await()
+                val articleList = snapshot.documents.mapNotNull { document ->
+                    try {
+                        val article = document.toObject(Article::class.java)?.copy(id = document.id)
+                        article?.let {
+                            val rawDate = document.getString("date") ?: ""
+                            val formattedDate = try {
+                                val inputFormat =
+                                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                val outputFormat =
+                                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+                                val parsedDate = inputFormat.parse(rawDate)
+                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
+                            } catch (e: Exception) {
+                                rawDate
+                            }
+                            it.copy(date = formattedDate)
+                        }
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+                _recommendedArticles.postValue(articleList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
