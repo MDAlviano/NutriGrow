@@ -8,7 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.Progress
 
-class PlantPlanProgressAdapter(val listProgress: List<Progress>, val onClick: (Progress) -> Unit) : RecyclerView.Adapter<PlantPlanProgressAdapter.MainViewHolder>() {
+class PlantPlanProgressAdapter(var listProgress: List<Progress>, val onClick: (Progress) -> Unit) : RecyclerView.Adapter<PlantPlanProgressAdapter.MainViewHolder>() {
+    fun updateProgresses(newProgresses: List<Progress>) {
+        listProgress = newProgresses
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

@@ -13,5 +13,5 @@ data class Plan(
     val plant: String,
     val day: Int,
     val condition: String,
-    val createdAt: Date
+    val createdAt: String
 ): Parcelable
