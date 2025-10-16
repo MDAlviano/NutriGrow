@@ -90,7 +90,6 @@ class HomeViewModel : ViewModel() {
                         }
                         _weather.value = WeatherResult(temp, condition, advice, city)
 
-                        // Cache ke SharedPreferences
                         val prefs = context.getSharedPreferences("weather_cache", Context.MODE_PRIVATE)
                         prefs.edit().apply {
                             putFloat("temp", temp.toFloat())
