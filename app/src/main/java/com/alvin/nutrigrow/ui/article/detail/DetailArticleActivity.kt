@@ -41,6 +41,7 @@ class DetailArticleActivity : AppCompatActivity() {
             .into(binding.imgArticle)
 
         binding.tvArticleDate.text = article.date
+        binding.tvArticleCategory.text = article.category
         binding.tvArticleTitle.text = article.title
         binding.tvArticleDescription.text = article.content
     }

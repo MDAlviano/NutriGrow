@@ -31,6 +31,13 @@
                 android:textSize="11sp"/>
 
             <TextView
+                android:id="@+id/tvArticleCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="11sp"/>
+
+            <TextView
                 android:id="@+id/tvArticleTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

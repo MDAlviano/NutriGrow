@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alvin.nutrigrow.data.Article
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,36 +25,61 @@ class ArticleViewModel : ViewModel() {
     private val _recommendedArticles = MutableLiveData<List<Article>>()
     val recommendedArticles: LiveData<List<Article>> get() = _recommendedArticles
 
+    private val _categories = MutableLiveData<List<String>>()
+    val categories: LiveData<List<String>> get() = _categories
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> get() = _error
 
-    fun fetchArticles() {
+    init {
+        fetchCategories()
+    }
+
+    private fun fetchCategories() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val snapshot = db.collection("Articles").get().await()
+                val categories = snapshot.documents
+                    .mapNotNull { it.getString("category") }
+                    .distinct()
+                    .sorted()
+                _categories.postValue(categories)
+            } catch (e: Exception) {
+                _error.postValue("Failed to fetch categories: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchArticles(category: String? = null, searchQuery: String? = null) {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val snapshot = db.collection("article").get().await()
+                var query: Query = db.collection("Articles")
+                if (category != null && category.isNotBlank()) {
+                    query = query.whereEqualTo("category", category)
+                }
+                val snapshot = query.get().await()
                 val articleList = snapshot.documents.mapNotNull { document ->
                     try {
                         val article = document.toObject(Article::class.java)?.copy(id = document.id)
                         article?.let {
-                            val rawDate = document.getString("date") ?: ""
-                            val formattedDate = try {
-                                val inputFormat =
-                                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                val outputFormat =
-                                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                                val parsedDate = inputFormat.parse(rawDate)
-                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
-                            } catch (e: Exception) {
-                                rawDate
-                            }
+                            val formattedDate = document.getTimestamp("date")?.let { timestamp ->
+                                val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+                                outputFormat.format(timestamp.toDate())
+                            } ?: ""
                             it.copy(date = formattedDate)
                         }
                     } catch (e: Exception) {
                         null
+                    }
+                }.let { articles ->
+                    if (searchQuery != null && searchQuery.isNotBlank()) {
+                        articles.filter { it.title.contains(searchQuery, ignoreCase = true) }
+                    } else {
+                        articles
                     }
                 }
                 _articles.postValue(articleList)
