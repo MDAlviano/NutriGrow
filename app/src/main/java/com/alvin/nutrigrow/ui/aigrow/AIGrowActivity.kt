@@ -20,6 +20,7 @@ class AIGrowActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
+            title = "AI Grow"
         }
     }
 

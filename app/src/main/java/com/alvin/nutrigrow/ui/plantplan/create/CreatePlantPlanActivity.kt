@@ -26,6 +26,7 @@ class CreatePlantPlanActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
+            title = "Buat Rencana Baru"
         }
 
         setListener()

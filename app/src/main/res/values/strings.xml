@@ -18,4 +18,7 @@
     <string name="profile_fragment2">Diagnosis</string>
 
     <string name="default_web_client_id">69879537681-ta7557mi2q073kssd07el39vo9kdtld4.apps.googleusercontent.com</string>
+    <string name="cloudinary_cloud_name">dm6bkhvyn</string>
+    <string name="cloudinary_api_key">991948627825862</string>
+    <string name="cloudinary_api_secret">-887M_T9Xl5MUyeP_KlZ8Vkc0Co</string>
 </resources>

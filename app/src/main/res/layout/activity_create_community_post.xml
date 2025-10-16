@@ -65,7 +65,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvimg" />
 
     <ImageView
-        android:id="@+id/imgPickedCommunityImage"
+        android:id="@+id/imgPickedCommunityImagePreview"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginTop="6dp"
@@ -83,7 +83,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgPickedCommunityImage" />
+        app:layout_constraintTop_toBottomOf="@id/imgPickedCommunityImagePreview" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til2"

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.alvin.nutrigrow.data.Comment
 import com.alvin.nutrigrow.data.CommunityPost
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -41,7 +42,8 @@ class CommunityViewModel : ViewModel() {
                 val snapshot = db.collection("Posts").get().await()
                 val postList = snapshot.documents.mapNotNull { document ->
                     try {
-                        val post = document.toObject(CommunityPost::class.java)?.copy(id = document.id)
+                        val commentCount = db.collection("Comments").whereEqualTo("postId", document.id).count().toString()
+                        val post = document.toObject(CommunityPost::class.java)?.copy(id = document.id, replies = commentCount.toInt())
                         post?.let {
                             val rawDate = document.getString("createdAt") ?: ""
                             val formattedDate = try {
@@ -61,6 +63,41 @@ class CommunityViewModel : ViewModel() {
                     }
                 }
                 _posts.postValue(postList)
+                _error.postValue(null)
+            } catch (e: Exception) {
+                _error.postValue(e.message)
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun createPost(title: String, content: String, imageUrl: String) {
+        val userId = auth.currentUser?.uid
+        val userName = auth.currentUser?.displayName
+        if (userId == null) {
+            _error.postValue("User not logged in")
+            return
+        }
+
+        if (title.isBlank() || content.isBlank()) {
+            _error.postValue("Title and content cannot be empty")
+            return
+        }
+
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val currentTime = Timestamp.now()
+                val post = hashMapOf(
+                    "author" to userName,
+                    "content" to content,
+                    "createdAt" to currentTime,
+                    "imageUrl" to imageUrl,
+                    "title" to title,
+                    "userId" to userId
+                )
+                db.collection("Posts").add(post).await()
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
