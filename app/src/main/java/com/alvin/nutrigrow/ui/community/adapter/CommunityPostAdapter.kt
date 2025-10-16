@@ -1,4 +1,4 @@
-package com.alvin.nutrigrow.ui.community
+package com.alvin.nutrigrow.ui.community.adapter
 
 import android.view.LayoutInflater
 import android.view.View

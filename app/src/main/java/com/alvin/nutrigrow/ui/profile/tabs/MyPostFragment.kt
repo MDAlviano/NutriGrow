@@ -9,10 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alvin.nutrigrow.data.CommunityPost
-import com.alvin.nutrigrow.data.Progress
 import com.alvin.nutrigrow.databinding.FragmentMyPostBinding
-import com.alvin.nutrigrow.ui.community.CommunityPostAdapter
+import com.alvin.nutrigrow.ui.community.adapter.CommunityPostAdapter
 import com.alvin.nutrigrow.ui.community.detail.DetailCommunityActivity
 import com.alvin.nutrigrow.ui.profile.ProfileViewModel
 

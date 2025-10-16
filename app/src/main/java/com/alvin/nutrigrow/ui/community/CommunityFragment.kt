@@ -8,11 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alvin.nutrigrow.R
-import com.alvin.nutrigrow.data.CommunityPost
 import com.alvin.nutrigrow.databinding.FragmentCommunityBinding
+import com.alvin.nutrigrow.ui.community.adapter.CommunityPostAdapter
 import com.alvin.nutrigrow.ui.community.create.CreateCommunityPostActivity
 import com.alvin.nutrigrow.ui.community.detail.DetailCommunityActivity
 
