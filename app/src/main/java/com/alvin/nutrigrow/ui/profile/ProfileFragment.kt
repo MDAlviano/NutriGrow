@@ -84,6 +84,7 @@ class ProfileFragment : Fragment() {
             .into(binding.imgUser)
 
         binding.tvDisplayName.text = user?.displayName
+        binding.tvEmail.text = user?.email
     }
 
 }

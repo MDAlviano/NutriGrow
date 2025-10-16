@@ -1,6 +1,8 @@
 package com.alvin.nutrigrow.ui.home
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +26,9 @@ import com.alvin.nutrigrow.ui.article.ArticleAdapter
 import com.alvin.nutrigrow.ui.article.detail.DetailArticleActivity
 import com.alvin.nutrigrow.ui.plantplan.create.CreatePlantPlanActivity
 import com.alvin.nutrigrow.ui.plantplan.detail.DetailPlantPlanActivity
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HomeFragment : Fragment() {
 
@@ -30,6 +37,10 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var articleAdapter: ArticleAdapter
     private lateinit var plantPlanAdapter: ContinuePlantPlanAdapter
+
+    companion object {
+        private const val REQUEST_LOCATION = 100
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,11 +56,15 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setListener()
+        setCurrentDate()
         setupPlantPlanRecyclerView()
         setupArticleRecyclerView()
+        requestLocationPermission()
         observeViewModel()
+
         viewModel.fetchNewestArticles()
         viewModel.fetchNewestPlans()
+
     }
 
     override fun onResume() {
@@ -67,6 +82,31 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
+    private fun requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION)
+        } else {
+            viewModel.fetchWeather(requireContext())
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_LOCATION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            viewModel.fetchWeather(requireContext())
+        } else {
+            binding.tvLocation.text = "Unknown"
+            binding.tvTodayWeather.text = "Cuaca: Tidak diketahui"
+            binding.tvDegree.text = "N/A"
+            binding.tvConclusion.text = "Tidak ada data cuaca"
+        }
+    }
+
     private fun setListener() {
         binding.fabToAIGrow.setOnClickListener {
             Intent(requireContext(), AIGrowActivity::class.java).also {
@@ -79,6 +119,11 @@ class HomeFragment : Fragment() {
                 startActivity(it)
             }
         }
+    }
+
+    private fun setCurrentDate() {
+        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID"))
+        binding.tvDateToday.text = sdf.format(Date())
     }
 
     private fun setupPlantPlanRecyclerView() {
@@ -134,6 +179,12 @@ class HomeFragment : Fragment() {
             error?.let {
                 Toast.makeText(requireContext(), "Error: $it", Toast.LENGTH_LONG).show()
             }
+        }
+        viewModel.weather.observe(viewLifecycleOwner) { weather ->
+            binding.tvLocation.text = weather.city
+            binding.tvTodayWeather.text = "Cuaca Hari ini: ${weather.condition}"
+            binding.tvDegree.text = "${weather.temp}°C"
+            binding.tvConclusion.text = weather.advice
         }
     }
 }

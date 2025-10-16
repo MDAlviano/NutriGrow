@@ -29,6 +29,12 @@ class DetailPlantPlanActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val plan = intent.getParcelableExtra<Plan>("PLAN")
+
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = plan?.name
+        }
+
         plan?.let {
             setData(it)
             setupRecyclerView()

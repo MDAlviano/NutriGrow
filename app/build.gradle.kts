@@ -78,4 +78,6 @@ dependencies {
     implementation(libs.firebase.functions)
 
     implementation(libs.cloudinary.android)
+
+    implementation(libs.play.services.location)
 }

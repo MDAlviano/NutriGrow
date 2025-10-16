@@ -39,11 +39,11 @@
                 android:text="Nama Pengguna" />
 
             <TextView
-                android:id="@+id/tvUserDesc"
+                android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:text="Deskripsi singkat" />
+                android:text="user@email.com" />
         </LinearLayout>
     </LinearLayout>
 
