@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.alvin.nutrigrow.data.Plan
 import com.alvin.nutrigrow.data.Progress
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -90,6 +91,40 @@ class PlantPlanViewModel : ViewModel() {
                     }
                 }
                 _progresses.postValue(progressList)
+                _error.postValue(null)
+            } catch (e: Exception) {
+                _error.postValue(e.message)
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun createPlan(name: String, growingMedia: String, plant: String, condition: String = "") {
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            _error.postValue("User not logged in")
+            return
+        }
+
+        if (name.isBlank() || plant.isBlank() || condition.isBlank()) {
+            _error.postValue("Name, plant, and condition cannot be empty")
+            return
+        }
+
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val plan = hashMapOf(
+                    "userId" to userId,
+                    "name" to name,
+                    "growingMedia" to growingMedia,
+                    "plant" to plant,
+                    "day" to 0,
+                    "condition" to condition,
+                    "createdAt" to Timestamp.now()
+                )
+                db.collection("Plans").add(plan).await()
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)

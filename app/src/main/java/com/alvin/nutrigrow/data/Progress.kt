@@ -10,4 +10,5 @@ data class Progress(
     val day: Int,
     val imageUrl: String,
     val response: String,
+    val condition: String,
 ): Parcelable

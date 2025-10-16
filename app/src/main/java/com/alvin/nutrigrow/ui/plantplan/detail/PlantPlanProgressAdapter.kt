@@ -27,7 +27,7 @@ class PlantPlanProgressAdapter(var listProgress: List<Progress>, val onClick: (P
         position: Int
     ) {
         val progress = listProgress[position]
-        holder.day.text = "Hari ke - ${progress.day}"
+        holder.day.text = "Hari ke - ${progress.day} (${progress.condition})"
 
         holder.itemView.setOnClickListener {
             onClick(progress)
