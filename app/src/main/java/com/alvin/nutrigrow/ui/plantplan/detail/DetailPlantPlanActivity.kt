@@ -1,19 +1,17 @@
 package com.alvin.nutrigrow.ui.plantplan.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.Plan
-import com.alvin.nutrigrow.data.Progress
 import com.alvin.nutrigrow.databinding.ActivityPlantPlanDetailBinding
 import com.alvin.nutrigrow.ui.plantplan.PlantPlanViewModel
+import com.alvin.nutrigrow.ui.plantplan.detail.progress.DetailPlantProgressActivity
+import com.alvin.nutrigrow.ui.plantplan.detail.progress.UploadPlantPlanProgressActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -39,6 +37,7 @@ class DetailPlantPlanActivity : AppCompatActivity() {
             setData(it)
             setupRecyclerView()
             viewModel.fetchPlanProgresses(it.id)
+            viewModel.checkCanUploadToday(it.id)
         }
 
         observeViewModel()
@@ -47,13 +46,18 @@ class DetailPlantPlanActivity : AppCompatActivity() {
 
     private fun setListener() {
         binding.btnUploadPlantCondition.setOnClickListener {
-            Toast.makeText(this, "Upload condition clicked", Toast.LENGTH_SHORT).show()
+            Intent(this, UploadPlantPlanProgressActivity::class.java).also {
+                startActivity(it)
+            }
         }
     }
 
     private fun setupRecyclerView() {
         adapter = PlantPlanProgressAdapter(emptyList()) { progress ->
-            Toast.makeText(this, "Progress clicked: Day ${progress.day}", Toast.LENGTH_SHORT).show()
+            Intent(this, DetailPlantProgressActivity::class.java).apply {
+                putExtra("PROGRESS", progress)
+                startActivity(this)
+            }
         }
         binding.rvPlantCondition.layoutManager = LinearLayoutManager(this)
         binding.rvPlantCondition.adapter = adapter
@@ -88,17 +92,6 @@ class DetailPlantPlanActivity : AppCompatActivity() {
             error?.let {
                 Toast.makeText(this, "Error: $it", Toast.LENGTH_LONG).show()
             }
-        }
-    }
-
-    private fun setProgresses() {
-        val progresses = mutableListOf<Progress>()
-        if (progresses.isEmpty()) {
-            binding.tvProgressNone.visibility = View.VISIBLE
-            binding.rvPlantCondition.visibility = View.GONE
-        } else {
-            binding.tvProgressNone.visibility = View.GONE
-            binding.rvPlantCondition.visibility = View.VISIBLE
         }
     }
 }

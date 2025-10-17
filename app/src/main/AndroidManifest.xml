@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".MyApplication"
@@ -18,6 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NutriGrow"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.plantplan.detail.progress.DetailPlantProgressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.plantplan.detail.progress.UploadPlantPlanProgressActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.aigrow.detail.DetailAIGrowActivity"
             android:exported="false" />

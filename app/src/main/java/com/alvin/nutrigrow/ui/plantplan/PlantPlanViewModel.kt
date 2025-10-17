@@ -1,31 +1,50 @@
 package com.alvin.nutrigrow.ui.plantplan
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alvin.nutrigrow.MyApplication
 import com.alvin.nutrigrow.data.Plan
 import com.alvin.nutrigrow.data.Progress
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.content
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class PlantPlanViewModel : ViewModel() {
     private val db: FirebaseFirestore = Firebase.firestore
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val gemini: GenerativeModel = MyApplication.geminiModel
 
     private val _plans = MutableLiveData<List<Plan>>()
     val plans: LiveData<List<Plan>> get() = _plans
 
     private val _progresses = MutableLiveData<List<Progress>>()
     val progresses: LiveData<List<Progress>> get() = _progresses
+
+    private val _progressResult = MutableLiveData<Progress?>()
+    val progressResult: LiveData<Progress?> get() = _progressResult
+
+    private val _canUploadToday = MutableLiveData<Boolean>()
+    val canUploadToday: LiveData<Boolean> get() = _canUploadToday
+
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -125,6 +144,147 @@ class PlantPlanViewModel : ViewModel() {
                     "createdAt" to Timestamp.now()
                 )
                 db.collection("Plans").add(plan).await()
+                _error.postValue(null)
+            } catch (e: Exception) {
+                _error.postValue(e.message)
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun uploadImage(uri: Uri, onSuccess: (String) -> Unit) {
+        _isLoading.value = true
+        MediaManager.get().upload(uri)
+            .option("upload_preset", "nutrigrow")
+            .callback(object : UploadCallback {
+                override fun onStart(requestId: String) {}
+                override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
+                override fun onSuccess(requestId: String, resultData: Map<Any?, Any?>) {
+                    val url = resultData["secure_url"]?.toString().orEmpty()
+                    onSuccess(url)
+                }
+                override fun onError(requestId: String, error: ErrorInfo) {
+                    _error.postValue("Upload gagal: ${error.description}")
+                    _isLoading.postValue(false)
+                }
+                override fun onReschedule(requestId: String, error: ErrorInfo) {}
+            })
+            .dispatch()
+    }
+
+    fun analyzeProgress(imageUrl: String, plantPlanId: String, day: Int) {
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val prompt = """
+                    Kamu adalah ahli agronomi yang berpengalaman dalam mendiagnosis penyakit tanaman berdasarkan kondisi daun nya.
+
+                    Tugasmu adalah mengidentifikasi penyakit pada tanaman berdasarkan deskripsi atau data yang diberikan. 
+                    Jawab **dalam format JSON**, dengan dua bagian:
+                    1. "title": berupa judul
+                    2. "response": berupa teks HTML yang berisi:
+                       - deskripsi kondisi tanaman dan penyakitnya jika ada (gunakan <p> untuk paragraf)
+                       - identifikasi masalah yang spesifik (gunakan <ul><li> untuk daftar)
+                       - solusi atau penanganan organik tanpa bahan kimia (gunakan <ol><li>)
+                    3. "kondisi": berisi satu kata untuk menggambarkan tingkat kesehatan tanaman ("baik", "sedang", "buruk", atau "darurat").
+
+                    Pastikan format JSON valid dan tidak keluar dari struktur berikut:
+
+                    {
+                      "title": "Judul Diagnosa",
+                      "response": "<p>Deskripsi...</p><ul><li>Masalah 1...</li></ul><ol><li>Solusi 1...</li></ol>",
+                      "kondisi": "sedang"
+                    }
+
+                    Url Gambar:
+                    $imageUrl
+                """.trimIndent()
+
+                val content = content { text(prompt) }
+                val response = gemini.generateContent(content)
+                val jsonStr = response.text ?: throw IllegalStateException("Empty response")
+                val json = JSONObject(jsonStr)
+
+                val title = json.getString("title")
+                val htmlResponse = json.getString("response")
+                val condition = json.getString("kondisi")
+
+                val progress = Progress(
+                    id = "",
+                    plantPlanId = plantPlanId,
+                    day = day,
+                    imageUrl = imageUrl,
+                    response = htmlResponse,
+                    condition = condition,
+                    createdAt = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(Date())
+                )
+                _progressResult.postValue(progress)
+                _error.postValue(null)
+            } catch (e: Exception) {
+                _error.postValue(e.message ?: "Gemini error")
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun saveProgress(progress: Progress) {
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            _error.postValue("User not logged in")
+            return
+        }
+
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val data = hashMapOf(
+                    "plantPlanId" to progress.plantPlanId,
+                    "day" to progress.day,
+                    "imageUrl" to progress.imageUrl,
+                    "response" to progress.response,
+                    "condition" to progress.condition,
+                    "createdAt" to Timestamp.now()
+                )
+                db.collection("Plans")
+                    .document(progress.plantPlanId)
+                    .collection("Progress")
+                    .add(data)
+                    .await()
+
+                // Update day di Plans
+                db.collection("Plans")
+                    .document(progress.plantPlanId)
+                    .update("day", FieldValue.increment(1))
+                    .await()
+
+                _error.postValue(null)
+            } catch (e: Exception) {
+                _error.postValue(e.message)
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun checkCanUploadToday(planId: String) {
+        _isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val todayStart = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }.time
+                val snapshot = db.collection("Plans")
+                    .document(planId)
+                    .collection("Progress")
+                    .whereGreaterThanOrEqualTo("createdAt", Timestamp(todayStart))
+                    .get()
+                    .await()
+                _canUploadToday.postValue(snapshot.isEmpty)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)

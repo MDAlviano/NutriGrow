@@ -23,7 +23,7 @@ class DetailAIGrowActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "Title"
+            title = "Detail"
         }
 
         val diag = intent.getParcelableExtra<Diagnosis>("DIAGNOSIS")
