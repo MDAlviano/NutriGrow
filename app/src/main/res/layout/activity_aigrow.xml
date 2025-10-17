@@ -97,6 +97,16 @@
 
         </androidx.cardview.widget.CardView>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveDiagnosis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="12dp"
+            android:text="Simpan Diagnosis"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:textColor="@color/white"/>
+
     </LinearLayout>
 
 </RelativeLayout>

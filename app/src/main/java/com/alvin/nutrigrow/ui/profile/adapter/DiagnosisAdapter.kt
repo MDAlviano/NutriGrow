@@ -8,7 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.Diagnosis
 
-class DiagnosisAdapter(val listDiagnosis: List<Diagnosis>, val onClick: (Diagnosis) -> Unit) : RecyclerView.Adapter<DiagnosisAdapter.MainViewHolder>() {
+class DiagnosisAdapter(var listDiagnosis: List<Diagnosis>, val onClick: (Diagnosis) -> Unit) : RecyclerView.Adapter<DiagnosisAdapter.MainViewHolder>() {
+    fun updateList(newList: List<Diagnosis>) {
+        listDiagnosis = newList
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -24,7 +29,7 @@ class DiagnosisAdapter(val listDiagnosis: List<Diagnosis>, val onClick: (Diagnos
         val diagnosis = listDiagnosis[position]
 
         holder.title.text = diagnosis.title
-        holder.date.text = diagnosis.date
+        holder.date.text = diagnosis.createdAt
 
         holder.itemView.setOnClickListener {
             onClick(diagnosis)

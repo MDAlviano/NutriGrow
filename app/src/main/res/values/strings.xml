@@ -22,4 +22,5 @@
     <string name="cloudinary_api_key">991948627825862</string>
     <string name="cloudinary_api_secret">-887M_T9Xl5MUyeP_KlZ8Vkc0Co</string>
     <string name="weather_api_key">e488df60706e4be181c172754251610</string>
+    <string name="gemini_api_key">AIzaSyDfZnxDxyHr0qk-Ni5QUNC1y0WIk6PrZ7E</string>
 </resources>

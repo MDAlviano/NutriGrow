@@ -1,13 +1,16 @@
 package com.alvin.nutrigrow.ui.aigrow.detail
 
 import android.os.Bundle
+import android.text.Html
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.alvin.nutrigrow.R
+import com.alvin.nutrigrow.data.Diagnosis
 import com.alvin.nutrigrow.databinding.ActivityDetailAigrowBinding
+import com.bumptech.glide.Glide
 
 class DetailAIGrowActivity : AppCompatActivity() {
 
@@ -20,6 +23,13 @@ class DetailAIGrowActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
+            title = "Title"
+        }
+
+        val diag = intent.getParcelableExtra<Diagnosis>("DIAGNOSIS")
+        diag?.let {
+            Glide.with(this).load(it.imageUrl).into(binding.imgDetailAIPosted)
+            binding.tvDetailAIResponse.text = Html.fromHtml(it.response, Html.FROM_HTML_MODE_COMPACT)
         }
     }
 

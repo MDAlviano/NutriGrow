@@ -8,7 +8,8 @@ data class Diagnosis(
     val id: String,
     val userId: String,
     val title: String,
-    val date: String,
+    val createdAt: String,
     val imageUrl: String,
-    val response: String
+    val response: String,
+    val condition: String,
 ): Parcelable

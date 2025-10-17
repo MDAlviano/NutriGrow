@@ -9,6 +9,7 @@ firebaseDatabase = "21.0.0"
 firebaseStorage = "20.3.0"
 firebaseFunctions = "20.4.0"
 fragmentKtx = "1.8.4"
+generativeai = "0.8.0"
 glide = "4.16.0"
 converterGson = "2.9.0"
 kotlin = "2.0.21"
@@ -46,6 +47,7 @@ firebase-storage = { module = "com.google.firebase:firebase-storage", version.re
 firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
+generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
