@@ -173,18 +173,18 @@ class PlantPlanViewModel : ViewModel() {
             .dispatch()
     }
 
-    fun analyzeProgress(imageUrl: String, plantPlanId: String, day: Int) {
+    fun analyzeProgress(imageUrl: String, plantPlanId: String, day: Int, plant: String) {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val prompt = """
-                    Kamu adalah ahli agronomi yang berpengalaman dalam mendiagnosis penyakit tanaman berdasarkan kondisi daun nya.
+                    Kamu adalah ahli agronomi yang berpengalaman dalam mendiagnosis penyakit tanaman berdasarkan kondisi tanaman nya.
 
-                    Tugasmu adalah mengidentifikasi penyakit pada tanaman berdasarkan deskripsi atau data yang diberikan. 
+                    Tugasmu adalah mengidentifikasi tanaman berdasarkan deskripsi atau data yang diberikan. Tanamannya adalah $plant. Deskripsikanlah kondisi tanaman tersebut. Jika tanaman tersebut buah/ sayur maka tolong beri tahu apakah tanaman tersebut sudah siap panen atau belum.  
                     Jawab **dalam format JSON**, dengan dua bagian:
                     1. "title": berupa judul
                     2. "response": berupa teks HTML yang berisi:
-                       - deskripsi kondisi tanaman dan penyakitnya jika ada (gunakan <p> untuk paragraf)
+                       - deskripsi kondisi tanaman dan penyakitnya jika ada (gunakan <p> untuk paragraf) dan apakah 
                        - identifikasi masalah yang spesifik (gunakan <ul><li> untuk daftar)
                        - solusi atau penanganan organik tanpa bahan kimia (gunakan <ol><li>)
                     3. "kondisi": berisi satu kata untuk menggambarkan tingkat kesehatan tanaman ("baik", "sedang", "buruk", atau "darurat").
@@ -253,7 +253,6 @@ class PlantPlanViewModel : ViewModel() {
                     .add(data)
                     .await()
 
-                // Update day di Plans
                 db.collection("Plans")
                     .document(progress.plantPlanId)
                     .update("day", FieldValue.increment(1))

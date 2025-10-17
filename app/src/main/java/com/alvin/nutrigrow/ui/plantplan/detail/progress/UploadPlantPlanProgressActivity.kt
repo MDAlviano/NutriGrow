@@ -72,7 +72,7 @@ class UploadPlantPlanProgressActivity : AppCompatActivity() {
         val plan = intent.getParcelableExtra<Plan>("PLAN") ?: return
         val day = plan.day + 1
         viewModel.uploadImage(uri) { imageUrl ->
-            viewModel.analyzeProgress(imageUrl, plan.id, day)
+            viewModel.analyzeProgress(imageUrl, plan.id, day, plan.plant)
         }
     }
 
