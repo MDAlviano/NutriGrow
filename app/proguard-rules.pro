@@ -19,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.alvin.nutrigrow.data.Article { *; }
+-keep class com.alvin.nutrigrow.data.Comment { *; }
+-keep class com.alvin.nutrigrow.data.CommunityPost { *; }
+-keep class com.alvin.nutrigrow.data.Diagnosis { *; }
+-keep class com.alvin.nutrigrow.data.Plan { *; }
+-keep class com.alvin.nutrigrow.data.Progress { *; }
+-keep class com.alvin.nutrigrow.data.User { *; }
+
+-keepclassmembers class * {
+    @kotlinx.parcelize.Parcelize <init>(...);
+}

@@ -25,42 +25,37 @@
             android:layout_margin="20dp">
 
             <TextView
-                android:id="@+id/tvArticleDate"
+                android:id="@+id/tvArticleDateAndaCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"/>
-
-            <TextView
-                android:id="@+id/tvArticleCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="11sp"/>
+                android:textSize="13sp"/>
 
             <TextView
                 android:id="@+id/tvArticleTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="20sp"
+                android:layout_marginTop="6dp"
+                android:textSize="28sp"
+                android:textStyle="bold"
                 android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/tvArticleDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="18sp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#B6B6B6"/>
+                android:background="#B6B6B6"
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Check this out!"
+                android:text="Cek yang satu ini!"
                 android:textSize="18sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"/>

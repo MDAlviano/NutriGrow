@@ -1,15 +1,10 @@
 package com.alvin.nutrigrow.ui.auth
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.credentials.CredentialManager
 import com.alvin.nutrigrow.MainActivity
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.databinding.ActivityAuthBinding
@@ -28,17 +23,43 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
-    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = task.getResult(ApiException::class.java)!!
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: Exception) {
-                Snackbar.make(binding.root, "Login gagal: ${e.message}", Snackbar.LENGTH_SHORT).show()
+    private val signInLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            Log.d(
+                "AuthActivity",
+                "Sign-in result: resultCode=${result.resultCode}, data=${result.data}"
+            )
+            if (result.resultCode == RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    Log.d("AuthActivity", "Google account retrieved: ${account?.email}")
+                    if (account != null && account.idToken != null) {
+                        firebaseAuthWithGoogle(account.idToken!!)
+                    } else {
+                        Snackbar.make(
+                            binding.root,
+                            "Gagal mendapatkan akun Google",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: ApiException) {
+                    Log.e("AuthActivity", "Google Sign-In failed: ${e.statusCode}, ${e.message}")
+                    Snackbar.make(binding.root, "Login gagal: ${e.message}", Snackbar.LENGTH_SHORT)
+                        .show()
+                } catch (e: Exception) {
+                    Log.e("AuthActivity", "Unexpected error: ${e.message}", e)
+                    Snackbar.make(binding.root, "Login gagal: ${e.message}", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+            } else {
+                Log.w(
+                    "AuthActivity",
+                    "Sign-in cancelled or failed: resultCode=${result.resultCode}"
+                )
+                Snackbar.make(binding.root, "Login dibatalkan", Snackbar.LENGTH_SHORT).show()
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,48 +69,61 @@ class AuthActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        setListener()
-        setLogin()
-    }
-
-    private fun setListener() {
-        binding.bLogin.setOnClickListener {
-            Snackbar.make(binding.root, "Are you sure?", Snackbar.LENGTH_SHORT).setAction("Yes") {
-                Intent(this, MainActivity::class.java).also {
-                    startActivity(it)
-                    finish()
-                }
-            }.show()
+        if (auth.currentUser != null) {
+            Log.d("AuthActivity", "User already logged in: ${auth.currentUser?.email}")
+            navigateToMainActivity()
         }
+
+        setLogin()
     }
 
     private fun setLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken("69879537681-ta7557mi2q073kssd07el39vo9kdtld4.apps.googleusercontent.com")
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         binding.bLogin.setOnClickListener {
+            Log.d("AuthActivity", "Login button clicked")
             val signInIntent = googleSignInClient.signInIntent
             signInLauncher.launch(signInIntent)
         }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
+        Log.d("AuthActivity", "Authenticating with Firebase using idToken")
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-                    Snackbar.make(binding.root, "Selamat datang, ${user?.displayName}", Snackbar.LENGTH_SHORT).show()
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                    Log.d("AuthActivity", "Firebase auth successful: ${user?.email}")
+                    Snackbar.make(
+                        binding.root,
+                        "Selamat datang, ${user?.displayName}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    navigateToMainActivity()
                 } else {
-                    Snackbar.make(binding.root, "Login gagal", Snackbar.LENGTH_SHORT).show()
+                    Log.e("AuthActivity", "Firebase auth failed: ${task.exception?.message}")
+                    Snackbar.make(
+                        binding.root,
+                        "Login gagal: ${task.exception?.message}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
             }
+    }
+
+    private fun navigateToMainActivity() {
+        Log.d("AuthActivity", "Navigating to MainActivity")
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
     }
 
 }

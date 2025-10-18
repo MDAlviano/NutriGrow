@@ -7,6 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.Comment
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CommentAdapter(var comments: List<Comment>): RecyclerView.Adapter<CommentAdapter.MyViewHolder>() {
     fun updateComments(newComment: List<Comment>) {
@@ -28,7 +31,19 @@ class CommentAdapter(var comments: List<Comment>): RecyclerView.Adapter<CommentA
     ) {
         val comment = comments[position]
         holder.tvComment.text = comment.comment
-        holder.tvDate.text = comment.createdAt
+
+        val formattedDate = when (val dateValue = comment.createdAt) {
+            is com.google.firebase.Timestamp -> {
+                val date = dateValue.toDate()
+                SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(date)
+            }
+            is Date -> {
+                SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(dateValue)
+            }
+            is String -> dateValue // kalau disimpan sebagai string
+            else -> "-"
+        }
+        holder.tvDate.text = formattedDate
     }
 
     override fun getItemCount(): Int {

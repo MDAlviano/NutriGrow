@@ -13,6 +13,7 @@ import com.alvin.nutrigrow.ui.plantplan.PlantPlanViewModel
 import com.alvin.nutrigrow.ui.plantplan.detail.progress.DetailPlantProgressActivity
 import com.alvin.nutrigrow.ui.plantplan.detail.progress.UploadPlantPlanProgressActivity
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class DetailPlantPlanActivity : AppCompatActivity() {
@@ -46,9 +47,8 @@ class DetailPlantPlanActivity : AppCompatActivity() {
 
     private fun setListener() {
         binding.btnUploadPlantCondition.setOnClickListener {
-            Intent(this, UploadPlantPlanProgressActivity::class.java).also {
-                startActivity(it)
-            }
+            val intent = Intent(this, UploadPlantPlanProgressActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -66,8 +66,18 @@ class DetailPlantPlanActivity : AppCompatActivity() {
     private fun setData(plan: Plan) {
         binding.tvPlantPlanDay.text = "Hari ke: ${plan.day}"
         binding.tvPlantPlanCreated.text = plan.createdAt?.let {
-            val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-            outputFormat.format(it)
+            val formattedDate = when (val dateValue = it) {
+                is com.google.firebase.Timestamp -> {
+                    val date = dateValue.toDate()
+                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(date)
+                }
+                is Date -> {
+                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(dateValue)
+                }
+                is String -> dateValue // kalau disimpan sebagai string
+                else -> "-"
+            }
+            formattedDate.format(it)
         } ?: "Unknown Date"
         binding.tvPlantPlanLatestCondition.text = "Kondisi Terbaru: ${plan.condition}"
     }

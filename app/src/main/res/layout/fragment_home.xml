@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
-        android:layout_height="165dp"
+        android:layout_height="170dp"
         android:contentDescription="bg"
         android:scaleType="centerCrop"
         android:src="@drawable/ntg_bg_home"
@@ -30,18 +30,17 @@
             android:id="@+id/statsCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_alignParentTop="true"
-            android:background="@color/white"
-            android:translationZ="4dp"
-            app:cardCornerRadius="12dp">
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
+                <!-- Bagian Header -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,77 +49,83 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tvDateToday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Rabu, 17 September 2025"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/tvDateToday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:text="Rabu, 17 September 2025"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                <!-- Lokasi -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="2dp"
-                        android:layout_toStartOf="@+id/tvLocation"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="4dp"
                         android:src="@drawable/baseline_location_pin_dark_24" />
 
                     <TextView
                         android:id="@+id/tvLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
                         android:text="Kota Semarang"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
-                </RelativeLayout>
-
+                <!-- Garis Pemisah -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="14dp"
                     android:background="#B6B6B6" />
 
-                <RelativeLayout
+                <!-- Cuaca -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="8dp">
 
                     <TextView
                         android:id="@+id/tvTodayWeather"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:text="Cuaca Hari ini: Cerah"
+                        android:text="Cuaca Hari Ini: Cerah"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
+                        android:textSize="17sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvDegree"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="29° C"
+                        android:layout_marginTop="2dp"
+                        android:text="Suhu: 29° C"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
+                </LinearLayout>
 
-                </RelativeLayout>
-
+                <!-- Kesimpulan -->
                 <TextView
                     android:id="@+id/tvConclusion"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="6dp"
+                    android:padding="8dp"
+                    android:background="@drawable/bg_conclusion"
                     android:text="Hari ini adalah waktu yang tepat untuk menanam!"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -213,7 +218,7 @@
             android:backgroundTint="@color/primary"
             android:contentDescription="fabToAIGrow"
             android:tint="@color/white"
-            android:src="@drawable/ntb_aigrow" />
+            android:src="@drawable/ntg_aigrow" />
 
     </RelativeLayout>
 

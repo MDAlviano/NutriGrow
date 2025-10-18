@@ -41,11 +41,15 @@ class PlantPlanFragment : Fragment() {
         setListener()
         setSpinnerItems()
         observeViewModel()
+    }
+
+    override fun onStart() {
+        super.onStart()
         viewModel.fetchUserPlans()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 

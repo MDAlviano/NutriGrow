@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -150,6 +151,7 @@ class HomeFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.plans.observe(viewLifecycleOwner) { plans ->
+            Log.e("home fragment", plans.toString())
             plantPlanAdapter.updatePlans(plans)
             if (plans.isEmpty()) {
                 binding.groupNone.visibility = View.VISIBLE
@@ -161,6 +163,7 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.articles.observe(viewLifecycleOwner) { articles ->
+            Log.e("home fragment", articles.toString())
             articleAdapter.updateArticles(articles)
             if (articles.isEmpty()) {
                 binding.tvArticleNone.visibility = View.VISIBLE
@@ -182,8 +185,8 @@ class HomeFragment : Fragment() {
         }
         viewModel.weather.observe(viewLifecycleOwner) { weather ->
             binding.tvLocation.text = weather.city
-            binding.tvTodayWeather.text = "Cuaca Hari ini: ${weather.condition}"
-            binding.tvDegree.text = "${weather.temp}°C"
+            binding.tvTodayWeather.text = "Cuaca : ${weather.condition}"
+            binding.tvDegree.text = "Suhu : ${weather.temp}°C"
             binding.tvConclusion.text = weather.advice
         }
     }

@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.CommunityPost
 import com.bumptech.glide.Glide
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CommunityPostAdapter(var listPost: List<CommunityPost>, val onClick: (CommunityPost) -> Unit): RecyclerView.Adapter<CommunityPostAdapter.MainViewHolder>() {
     fun updatePosts(newPosts: List<CommunityPost>) {
@@ -32,10 +35,25 @@ class CommunityPostAdapter(var listPost: List<CommunityPost>, val onClick: (Comm
 
         Glide.with(holder.itemView.context)
             .load(post.imageUrl)
+            .placeholder(R.drawable.mangga)
             .into(holder.img)
 
         holder.author.text = post.author
-        holder.date.text = post.date
+
+        val formattedDate = when (val dateValue = post.createdAt) {
+            is com.google.firebase.Timestamp -> {
+                val date = dateValue.toDate()
+                SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(date)
+            }
+            is Date -> {
+                SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(dateValue)
+            }
+            is String -> dateValue // kalau disimpan sebagai string
+            else -> "-"
+        }
+        holder.date.text = formattedDate
+
+
         holder.title.text = post.title
         holder.replies.text = "${post.replies} Replies"
 
@@ -51,7 +69,7 @@ class CommunityPostAdapter(var listPost: List<CommunityPost>, val onClick: (Comm
     class MainViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val author = view.findViewById<TextView>(R.id.tvCommunityAuthorItem)
         val date = view.findViewById<TextView>(R.id.tvCommunityDateItem)
-        val title = view.findViewById<TextView>(R.id.tvCommunityTitle)
+        val title = view.findViewById<TextView>(R.id.tvCommunityTitleItem)
         val img = view.findViewById<ImageView>(R.id.imgCommunityImageItem)
         val replies = view.findViewById<TextView>(R.id.tvCommunityRepliesItem)
     }

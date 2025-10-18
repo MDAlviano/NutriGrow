@@ -1,6 +1,7 @@
 package com.alvin.nutrigrow.ui.plantplan
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,7 +46,6 @@ class PlantPlanViewModel : ViewModel() {
     private val _canUploadToday = MutableLiveData<Boolean>()
     val canUploadToday: LiveData<Boolean> get() = _canUploadToday
 
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
@@ -71,22 +71,18 @@ class PlantPlanViewModel : ViewModel() {
                 }
                 val planList = snapshot.documents.mapNotNull { document ->
                     try {
-                        val plan = document.toObject(Plan::class.java)?.copy(id = document.id)
-                        plan?.let {
-                            val formattedDate = it.createdAt?.let { date ->
-                                val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                                outputFormat.format(date)
-                            } ?: ""
-                            it.copy(createdAt = formattedDate)
-                        }
+                        document.toObject(Plan::class.java)?.copy(id = document.id)
                     } catch (e: Exception) {
+                        Log.e("fetchUserPlans", "Error parsing document: ${e.message}", e)
                         null
                     }
                 }
+                Log.d("fetchUserPlans", "Fetched ${planList.size} plans for user $userId")
                 _plans.postValue(planList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("fetchUserPlans", "Error fetching plans: ${e.message}", e)
             } finally {
                 _isLoading.postValue(false)
             }
@@ -97,9 +93,8 @@ class PlantPlanViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val snapshot = db.collection("Plans")
-                    .document(planId)
-                    .collection("Progress")
+                val snapshot = db.collection("Progress")
+                    .whereEqualTo("plantPlanId", planId)
                     .get()
                     .await()
                 val progressList = snapshot.documents.mapNotNull { document ->
@@ -113,6 +108,7 @@ class PlantPlanViewModel : ViewModel() {
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("plant plan vm fetch plant progress", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }
@@ -126,8 +122,8 @@ class PlantPlanViewModel : ViewModel() {
             return
         }
 
-        if (name.isBlank() || plant.isBlank() || condition.isBlank()) {
-            _error.postValue("Name, plant, and condition cannot be empty")
+        if (name.isBlank() || plant.isBlank()) {
+            _error.postValue("Name, plant cannot be empty")
             return
         }
 
@@ -147,6 +143,7 @@ class PlantPlanViewModel : ViewModel() {
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("plant plan vm fetch create plan", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }
@@ -166,6 +163,7 @@ class PlantPlanViewModel : ViewModel() {
                 }
                 override fun onError(requestId: String, error: ErrorInfo) {
                     _error.postValue("Upload gagal: ${error.description}")
+                    Log.e("plant plan vm upload image", error.description)
                     _isLoading.postValue(false)
                 }
                 override fun onReschedule(requestId: String, error: ErrorInfo) {}
@@ -217,12 +215,13 @@ class PlantPlanViewModel : ViewModel() {
                     imageUrl = imageUrl,
                     response = htmlResponse,
                     condition = condition,
-                    createdAt = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(Date())
+                    createdAt = Timestamp.now()
                 )
                 _progressResult.postValue(progress)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message ?: "Gemini error")
+                Log.e("plant plan vm analyze progress", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }
@@ -261,6 +260,7 @@ class PlantPlanViewModel : ViewModel() {
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("plant plan vm save progress", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }
@@ -287,6 +287,7 @@ class PlantPlanViewModel : ViewModel() {
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("plant plan vm check can upload today", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }

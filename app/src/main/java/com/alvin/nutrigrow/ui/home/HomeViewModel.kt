@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -73,7 +74,7 @@ class HomeViewModel : ViewModel() {
                 return@getUserLocation
             }
             val call = weatherApi.getWeather(
-                apiKey = R.string.weather_api_key.toString(),
+                apiKey = "e488df60706e4be181c172754251610",
                 city = city
             )
             call.enqueue(object : Callback<WeatherResponse> {
@@ -86,7 +87,7 @@ class HomeViewModel : ViewModel() {
                         val advice = if (temp > 20 && (condition == "Clear" || condition == "Partly cloudy")) {
                             "Cocok untuk menanam!"
                         } else {
-                            "Sepertinya hari ini bukan waktu terbaik untuk menanam."
+                            "Sepertinya kali ini bukan waktu terbaik untuk menanam."
                         }
                         _weather.value = WeatherResult(temp, condition, advice, city)
 
@@ -106,6 +107,7 @@ class HomeViewModel : ViewModel() {
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
                     _isLoading.value = false
                     _error.value = "Koneksi gagal: ${t.message}"
+                    Log.e("fetch weather vm", t.message.toString())
                     // Load dari cache jika offline
                     val prefs = context.getSharedPreferences("weather_cache", Context.MODE_PRIVATE)
                     val temp = prefs.getFloat("temp", 0f).toDouble()
@@ -142,34 +144,27 @@ class HomeViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val snapshot = db.collection("article")
+                val snapshot = db.collection("Articles")
                     .orderBy("date", Query.Direction.DESCENDING)
                     .limit(5)
                     .get()
                     .await()
+
                 val articleList = snapshot.documents.mapNotNull { document ->
                     try {
-                        val article = document.toObject(Article::class.java)?.copy(id = document.id)
-                        article?.let {
-                            val rawDate = document.getDate("date") ?: ""
-                            val formattedDate = try {
-                                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                                val parsedDate = inputFormat.parse(rawDate.toString())
-                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
-                            } catch (e: Exception) {
-                                rawDate
-                            }
-                            it.copy(date = formattedDate.toString())
-                        }
+                        document.toObject(Article::class.java)?.copy(id = document.id)
                     } catch (e: Exception) {
+                        Log.e("fetchNewestArticles", "Error parsing document ${document.id}: ${e.message}", e)
                         null
                     }
                 }
+
+                Log.d("fetchNewestArticles", "Fetched ${snapshot.size()} documents, ${articleList.size} articles")
                 _articles.postValue(articleList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("queryIndexAnjay", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }
@@ -193,29 +188,22 @@ class HomeViewModel : ViewModel() {
                     .limit(3)
                     .get()
                     .await()
+
                 val planList = snapshot.documents.mapNotNull { document ->
                     try {
-                        val plan = document.toObject(Plan::class.java)?.copy(id = document.id)
-                        plan?.let {
-                            val rawDate = document.getString("createdAt") ?: ""
-                            val formattedDate = try {
-                                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                                val parsedDate = inputFormat.parse(rawDate)
-                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
-                            } catch (e: Exception) {
-                                rawDate
-                            }
-                            it.copy(createdAt = formattedDate)
-                        }
+                        document.toObject(Plan::class.java)?.copy(id = document.id)
                     } catch (e: Exception) {
+                        Log.e("fetchNewestPlans", "Error parsing document: ${e.message}")
                         null
                     }
                 }
+
+                Log.d("fetchNewestPlans", "Fetched ${planList.size} plans for user $userId")
                 _plans.postValue(planList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("queryIndexAnjay", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }

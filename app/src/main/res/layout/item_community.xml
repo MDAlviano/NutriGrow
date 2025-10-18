@@ -1,42 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="12dp"
-    android:layout_marginTop="8dp">
+    android:layout_marginTop="12dp"
+    android:layout_marginHorizontal="6dp"
+    android:translationZ="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:orientation="horizontal">
+        android:layout_margin="12dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvCommunityAuthorItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:textStyle="bold"/>
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/text"/>
 
         <TextView
             android:id="@+id/tvCommunityDateItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:textSize="11sp"/>
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tvCommunityTitleItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/text"/>
 
         <ImageView
             android:id="@+id/imgCommunityImageItem"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_marginTop="6dp"
             android:scaleType="centerCrop"/>
 
@@ -45,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="11sp"/>
+            android:textSize="12sp"/>
 
     </LinearLayout>
 

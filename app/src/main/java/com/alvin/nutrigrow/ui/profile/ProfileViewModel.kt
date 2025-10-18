@@ -1,5 +1,6 @@
 package com.alvin.nutrigrow.ui.profile
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,33 +41,32 @@ class ProfileViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val snapshot = db.collection("Posts")
-                    .whereEqualTo("author", userId)
+                    .whereEqualTo("userId", userId)
                     .get()
                     .await()
                 val postList = snapshot.documents.mapNotNull { document ->
                     try {
-                        val post = document.toObject(CommunityPost::class.java)?.copy(id = document.id)
-                        post?.let {
-                            // Format date to "dd MMMM yyyy"
-                            val rawDate = document.getString("date") ?: ""
-                            val formattedDate = try {
-                                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                                val parsedDate = inputFormat.parse(rawDate)
-                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
-                            } catch (e: Exception) {
-                                rawDate // Fallback to raw date if parsing fails
-                            }
-                            it.copy(date = formattedDate)
-                        }
+                        // Ambil jumlah komentar untuk post ini
+                        val commentCount = db.collection("Comments")
+                            .whereEqualTo("postId", document.id)
+                            .get()
+                            .await()
+                            .size()
+                        document.toObject(CommunityPost::class.java)?.copy(
+                            id = document.id,
+                            replies = commentCount
+                        )
                     } catch (e: Exception) {
+                        Log.e("fetchUserPosts", "Error parsing document ${document.id}: ${e.message}", e)
                         null
                     }
                 }
+                Log.d("fetchUserPosts", "Fetched ${postList.size} posts for user $userId")
                 _posts.postValue(postList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("fetchUserPosts", "Error fetching posts: ${e.message}", e)
             } finally {
                 _isLoading.postValue(false)
             }

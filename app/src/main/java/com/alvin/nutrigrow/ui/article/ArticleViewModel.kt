@@ -1,5 +1,6 @@
 package com.alvin.nutrigrow.ui.article
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -48,6 +49,7 @@ class ArticleViewModel : ViewModel() {
                     .sorted()
                 _categories.postValue(categories)
             } catch (e: Exception) {
+                Log.e("article vm fetch categories", e.message.toString())
                 _error.postValue("Failed to fetch categories: ${e.message}")
             }
         }
@@ -64,15 +66,9 @@ class ArticleViewModel : ViewModel() {
                 val snapshot = query.get().await()
                 val articleList = snapshot.documents.mapNotNull { document ->
                     try {
-                        val article = document.toObject(Article::class.java)?.copy(id = document.id)
-                        article?.let {
-                            val formattedDate = document.getTimestamp("date")?.let { timestamp ->
-                                val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                                outputFormat.format(timestamp.toDate())
-                            } ?: ""
-                            it.copy(date = formattedDate)
-                        }
+                        document.toObject(Article::class.java)?.copy(id = document.id)
                     } catch (e: Exception) {
+                        Log.e("fetchArticles", "Error parsing document ${document.id}: ${e.message}", e)
                         null
                     }
                 }.let { articles ->
@@ -82,10 +78,12 @@ class ArticleViewModel : ViewModel() {
                         articles
                     }
                 }
+                Log.d("fetchArticles", "Fetched ${articleList.size} articles")
                 _articles.postValue(articleList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("fetchArticles", "Error fetching articles: ${e.message}", e)
             } finally {
                 _isLoading.postValue(false)
             }
@@ -96,36 +94,25 @@ class ArticleViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val snapshot = db.collection("article")
-                    .whereNotEqualTo("id", excludeArticleId)
+                val snapshot = db.collection("Articles")
                     .limit(5)
                     .get()
                     .await()
                 val articleList = snapshot.documents.mapNotNull { document ->
                     try {
-                        val article = document.toObject(Article::class.java)?.copy(id = document.id)
-                        article?.let {
-                            val rawDate = document.getString("date") ?: ""
-                            val formattedDate = try {
-                                val inputFormat =
-                                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                val outputFormat =
-                                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                                val parsedDate = inputFormat.parse(rawDate)
-                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
-                            } catch (e: Exception) {
-                                rawDate
-                            }
-                            it.copy(date = formattedDate)
-                        }
+                        if (document.id == excludeArticleId) null
+                        else document.toObject(Article::class.java)?.copy(id = document.id)
                     } catch (e: Exception) {
+                        Log.e("fetchRecommendedArticles", "Error parsing document ${document.id}: ${e.message}", e)
                         null
                     }
                 }
+                Log.d("fetchRecommendedArticles", "Fetched ${articleList.size} recommended articles")
                 _recommendedArticles.postValue(articleList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("queryIndexAnjay", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }

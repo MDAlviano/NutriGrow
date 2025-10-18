@@ -47,7 +47,7 @@ class ArticleAdapter(var articles: List<Article>, val onClick: (Article) -> Unit
 
     class MainViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val img = view.findViewById<ImageView>(R.id.imgArticleItem)
-        val tvTitle = view.findViewById<TextView>(R.id.tvArticleTitle)
+        val tvTitle = view.findViewById<TextView>(R.id.tvArticleTitleItem)
         val tvDesc = view.findViewById<TextView>(R.id.tvArticleDescriptionItem)
     }
 }

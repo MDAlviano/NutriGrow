@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/imgDetailAIPosted"
-                android:layout_width="150dp"
-                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 android:scaleType="centerCrop"
                 android:layout_alignParentEnd="true"
                 android:contentDescription="img"/>
@@ -32,16 +32,18 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp">
+            app:cardCornerRadius="12dp"
+            android:layout_marginVertical="20dp">
 
             <TextView
                 android:id="@+id/tvDetailAIResponse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"/>
+                android:layout_margin="12dp"
+                android:textColor="@color/text"/>
 
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
-</RelativeLayout>
+</ScrollView>

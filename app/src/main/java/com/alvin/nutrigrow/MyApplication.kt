@@ -17,15 +17,15 @@ class MyApplication : Application() {
         FirebaseApp.initializeApp(this)
 
         val config = mapOf(
-            "cloud_name" to R.string.cloudinary_cloud_name,
-            "api_key" to R.string.cloudinary_api_key,
-            "api_secret" to R.string.cloudinary_api_secret
+            "cloud_name" to "dm6bkhvyn",
+            "api_key" to "991948627825862",
+            "api_secret" to "-887M_T9Xl5MUyeP_KlZ8Vkc0Co"
         )
         MediaManager.init(this, config)
 
         geminiModel = GenerativeModel(
-            modelName = "gemini-1.5-flash",
-            apiKey = R.string.gemini_api_key.toString()
+            modelName = "gemini-2.5-flash",
+            apiKey = "AIzaSyDfZnxDxyHr0qk-Ni5QUNC1y0WIk6PrZ7E"
         )
     }
 }

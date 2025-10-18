@@ -15,6 +15,9 @@ import com.alvin.nutrigrow.databinding.ActivityCommunityDetailBinding
 import com.alvin.nutrigrow.ui.community.CommunityViewModel
 import com.alvin.nutrigrow.ui.community.adapter.CommentAdapter
 import com.bumptech.glide.Glide
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DetailCommunityActivity : AppCompatActivity() {
 
@@ -52,8 +55,20 @@ class DetailCommunityActivity : AppCompatActivity() {
             .load(post.imageUrl)
             .into(binding.imgCommunity)
 
+        val formattedDate = when (val dateValue = post.createdAt) {
+            is com.google.firebase.Timestamp -> {
+                val date = dateValue.toDate()
+                SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(date)
+            }
+            is Date -> {
+                SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(dateValue)
+            }
+            is String -> dateValue // kalau disimpan sebagai string
+            else -> "-"
+        }
+        binding.tvCommunityDate.text = formattedDate
+
         binding.tvCommunityAuthor.text = post.author
-        binding.tvCommunityDate.text = post.date
         binding.tvCommunityTitle.text = post.title
         binding.tvCommunityDescription.text = post.content
     }

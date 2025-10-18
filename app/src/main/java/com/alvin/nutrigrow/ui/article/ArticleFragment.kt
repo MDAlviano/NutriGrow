@@ -30,7 +30,6 @@ class ArticleFragment : Fragment() {
     private val viewModel: ArticleViewModel by viewModels()
     private lateinit var adapter: ArticleAdapter
     private var selectedCategory: String? = null
-    private var searchJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,8 +49,8 @@ class ArticleFragment : Fragment() {
         viewModel.fetchArticles()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 

@@ -12,6 +12,9 @@ import com.alvin.nutrigrow.databinding.ActivityDetailArticleBinding
 import com.alvin.nutrigrow.ui.article.ArticleAdapter
 import com.alvin.nutrigrow.ui.article.ArticleViewModel
 import com.bumptech.glide.Glide
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DetailArticleActivity : AppCompatActivity() {
 
@@ -40,8 +43,18 @@ class DetailArticleActivity : AppCompatActivity() {
             .load(article.imageUrl)
             .into(binding.imgArticle)
 
-        binding.tvArticleDate.text = article.date
-        binding.tvArticleCategory.text = article.category
+        val formattedDate = when (val dateValue = article.date) {
+            is com.google.firebase.Timestamp -> {
+                val date = dateValue.toDate()
+                SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(date)
+            }
+            is Date -> {
+                SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(dateValue)
+            }
+            is String -> dateValue // kalau disimpan sebagai string
+            else -> "-"
+        }
+        binding.tvArticleDateAndaCategory.text = "$formattedDate - ${article.category}"
         binding.tvArticleTitle.text = article.title
         binding.tvArticleDescription.text = article.content
     }

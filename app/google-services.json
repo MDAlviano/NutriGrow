@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "69879537681-8uhilhbla9hambuvelvs8gmvausah49s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alvin.nutrigrow",
+            "certificate_hash": "19b9dc137e049e60433191a0557054604a4f492f"
+          }
+        },
+        {
           "client_id": "69879537681-ta7557mi2q073kssd07el39vo9kdtld4.apps.googleusercontent.com",
           "client_type": 3
         }

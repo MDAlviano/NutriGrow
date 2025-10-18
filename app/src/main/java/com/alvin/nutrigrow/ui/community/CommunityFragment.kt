@@ -38,12 +38,16 @@ class CommunityFragment : Fragment() {
         setupRecyclerView()
         setListener()
         observeViewModel()
-        viewModel.fetchPosts()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.fetchPosts()
     }
 
     private fun setListener() {

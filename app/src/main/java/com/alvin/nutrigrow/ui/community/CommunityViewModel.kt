@@ -1,5 +1,6 @@
 package com.alvin.nutrigrow.ui.community
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,33 +40,31 @@ class CommunityViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val snapshot = db.collection("Posts").get().await()
-                val postList = snapshot.documents.mapNotNull { document ->
+                // Ambil semua post
+                val postSnapshot = db.collection("Posts").get().await()
+                val postList = postSnapshot.documents.mapNotNull { document ->
                     try {
-                        val commentCount = db.collection("Comments").whereEqualTo("postId", document.id).count().toString()
-                        val post = document.toObject(CommunityPost::class.java)?.copy(id = document.id, replies = commentCount.toInt())
-                        post?.let {
-                            val rawDate = document.getString("createdAt") ?: ""
-                            val formattedDate = try {
-                                val inputFormat =
-                                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                val outputFormat =
-                                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-                                val parsedDate = inputFormat.parse(rawDate)
-                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
-                            } catch (e: Exception) {
-                                rawDate
-                            }
-                            it.copy(date = formattedDate)
-                        }
+                        // Ambil jumlah komentar untuk post ini
+                        val commentCount = db.collection("Comments")
+                            .whereEqualTo("postId", document.id)
+                            .get()
+                            .await()
+                            .size()
+                        document.toObject(CommunityPost::class.java)?.copy(
+                            id = document.id,
+                            replies = commentCount
+                        )
                     } catch (e: Exception) {
+                        Log.e("fetchPosts", "Error parsing document ${document.id}: ${e.message}", e)
                         null
                     }
                 }
+                Log.d("fetchPosts", "Fetched ${postList.size} posts")
                 _posts.postValue(postList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("fetchPosts", "Error fetching posts: ${e.message}", e)
             } finally {
                 _isLoading.postValue(false)
             }
@@ -101,6 +100,7 @@ class CommunityViewModel : ViewModel() {
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("community vm create post", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }
@@ -118,27 +118,19 @@ class CommunityViewModel : ViewModel() {
                     .await()
                 val commentList = snapshot.documents.mapNotNull { document ->
                     try {
-                        val comment = document.toObject(Comment::class.java)?.copy(id = document.id)
-                        comment?.let {
-                            val rawDate = document.getString("createdAt") ?: ""
-                            val formattedDate = try {
-                                val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                                val outputFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale("id", "ID"))
-                                val parsedDate = inputFormat.parse(rawDate)
-                                parsedDate?.let { outputFormat.format(it) } ?: rawDate
-                            } catch (e: Exception) {
-                                rawDate
-                            }
-                            it.copy(createdAt = formattedDate)
-                        }
+                        document.toObject(Comment::class.java)?.copy(id = document.id)
                     } catch (e: Exception) {
+                        Log.e("fetchComments", "Error parsing document ${document.id}: ${e.message}", e)
                         null
                     }
                 }
+                Log.d("fetchComments", "Fetched ${commentList.size} comments for post $postId")
                 _comments.postValue(commentList)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("fetchComments", "Error fetching comments: ${e.message}", e)
+                Log.e("queryIndexAnjay", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }
@@ -160,18 +152,18 @@ class CommunityViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
                 val comment = hashMapOf(
                     "postId" to postId,
                     "userId" to userId,
                     "comment" to commentText,
-                    "createdAt" to currentTime
+                    "createdAt" to Timestamp.now()
                 )
                 db.collection("Comments").add(comment).await()
                 fetchComments(postId)
                 _error.postValue(null)
             } catch (e: Exception) {
                 _error.postValue(e.message)
+                Log.e("community vm add comment", e.message.toString())
             } finally {
                 _isLoading.postValue(false)
             }
