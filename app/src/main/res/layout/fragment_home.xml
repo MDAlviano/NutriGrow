@@ -149,7 +149,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvContinuePlantPlan"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="150dp"
                 android:layout_marginTop="8dp" />
 
             <LinearLayout
@@ -195,7 +195,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvNewestArticle"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="200dp"
                 android:layout_marginTop="8dp" />
 
             <TextView

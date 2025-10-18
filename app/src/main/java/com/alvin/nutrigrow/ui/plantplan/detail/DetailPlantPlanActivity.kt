@@ -22,12 +22,14 @@ class DetailPlantPlanActivity : AppCompatActivity() {
     private val viewModel: PlantPlanViewModel by viewModels()
     private lateinit var adapter: PlantPlanProgressAdapter
 
+    private var plan: Plan? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlantPlanDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val plan = intent.getParcelableExtra<Plan>("PLAN")
+        plan = intent.getParcelableExtra<Plan>("PLAN")
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -48,6 +50,7 @@ class DetailPlantPlanActivity : AppCompatActivity() {
     private fun setListener() {
         binding.btnUploadPlantCondition.setOnClickListener {
             val intent = Intent(this, UploadPlantPlanProgressActivity::class.java)
+            intent.putExtra("PLAN", plan)
             startActivity(intent)
         }
     }
@@ -65,20 +68,6 @@ class DetailPlantPlanActivity : AppCompatActivity() {
 
     private fun setData(plan: Plan) {
         binding.tvPlantPlanDay.text = "Hari ke: ${plan.day}"
-        binding.tvPlantPlanCreated.text = plan.createdAt?.let {
-            val formattedDate = when (val dateValue = it) {
-                is com.google.firebase.Timestamp -> {
-                    val date = dateValue.toDate()
-                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(date)
-                }
-                is Date -> {
-                    SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(dateValue)
-                }
-                is String -> dateValue // kalau disimpan sebagai string
-                else -> "-"
-            }
-            formattedDate.format(it)
-        } ?: "Unknown Date"
         binding.tvPlantPlanLatestCondition.text = "Kondisi Terbaru: ${plan.condition}"
     }
 
@@ -100,7 +89,7 @@ class DetailPlantPlanActivity : AppCompatActivity() {
 
         viewModel.error.observe(this) { error ->
             error?.let {
-                Toast.makeText(this, "Error: $it", Toast.LENGTH_LONG).show()
+//                Toast.makeText(this, "Error: $it", Toast.LENGTH_LONG).show()
             }
         }
     }

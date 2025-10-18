@@ -25,6 +25,8 @@ class DetailCommunityActivity : AppCompatActivity() {
     private val viewModel: CommunityViewModel by viewModels()
     private lateinit var commentAdapter: CommentAdapter
 
+    private var post: CommunityPost? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
@@ -32,11 +34,10 @@ class DetailCommunityActivity : AppCompatActivity() {
         binding = ActivityCommunityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val post = intent.getParcelableExtra<CommunityPost>("POST")
+        post = intent.getParcelableExtra<CommunityPost>("POST")
         post?.let {
             setData(it)
             setupRecyclerView()
-            viewModel.fetchComments(it.id)
         }
 
         binding.btnSendCommunityComment.setOnClickListener {
@@ -48,6 +49,13 @@ class DetailCommunityActivity : AppCompatActivity() {
         }
 
         observeViewModel()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        post?.let {
+            viewModel.fetchComments(it.id)
+        }
     }
 
     private fun setData(post: CommunityPost) {

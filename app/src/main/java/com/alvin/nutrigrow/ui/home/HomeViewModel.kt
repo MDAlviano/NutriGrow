@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.alvin.nutrigrow.R
 import com.alvin.nutrigrow.data.Article
@@ -19,6 +20,7 @@ import com.alvin.nutrigrow.service.WeatherApi
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
@@ -145,7 +147,6 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val snapshot = db.collection("Articles")
-                    .orderBy("date", Query.Direction.DESCENDING)
                     .limit(5)
                     .get()
                     .await()
@@ -184,7 +185,6 @@ class HomeViewModel : ViewModel() {
             try {
                 val snapshot = db.collection("Plans")
                     .whereEqualTo("userId", userId)
-                    .orderBy("createdAt", Query.Direction.DESCENDING)
                     .limit(3)
                     .get()
                     .await()

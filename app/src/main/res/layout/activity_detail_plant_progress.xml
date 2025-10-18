@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/imgDetailAIPosted"
-                android:layout_width="150dp"
-                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
                 android:scaleType="centerCrop"
                 android:layout_alignParentEnd="true"
                 android:contentDescription="img"/>
@@ -32,13 +32,15 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp">
+            app:cardCornerRadius="12dp"
+            android:layout_marginVertical="12dp">
 
             <TextView
                 android:id="@+id/tvDetailAIResponse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"/>
+                android:layout_margin="12dp"
+                android:textSize="18sp"/>
 
         </androidx.cardview.widget.CardView>
 

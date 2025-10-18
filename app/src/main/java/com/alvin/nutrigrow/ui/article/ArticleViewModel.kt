@@ -95,7 +95,7 @@ class ArticleViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val snapshot = db.collection("Articles")
-                    .limit(5)
+//                    .limit(5)
                     .get()
                     .await()
                 val articleList = snapshot.documents.mapNotNull { document ->

@@ -62,10 +62,12 @@ class HomeFragment : Fragment() {
         setupArticleRecyclerView()
         requestLocationPermission()
         observeViewModel()
+    }
 
+    override fun onStart() {
+        super.onStart()
         viewModel.fetchNewestArticles()
         viewModel.fetchNewestPlans()
-
     }
 
     override fun onResume() {

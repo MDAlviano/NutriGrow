@@ -113,7 +113,6 @@ class CommunityViewModel : ViewModel() {
             try {
                 val snapshot = db.collection("Comments")
                     .whereEqualTo("postId", postId)
-                    .orderBy("createdAt", Query.Direction.DESCENDING)
                     .get()
                     .await()
                 val commentList = snapshot.documents.mapNotNull { document ->

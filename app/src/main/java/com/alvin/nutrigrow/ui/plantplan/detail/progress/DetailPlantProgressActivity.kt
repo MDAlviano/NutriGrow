@@ -14,6 +14,7 @@ class DetailPlantProgressActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityDetailPlantProgressBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         supportActionBar?.apply {

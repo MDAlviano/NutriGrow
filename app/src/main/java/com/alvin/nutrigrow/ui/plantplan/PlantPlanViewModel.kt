@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alvin.nutrigrow.MyApplication
+import com.alvin.nutrigrow.data.Diagnosis
 import com.alvin.nutrigrow.data.Plan
 import com.alvin.nutrigrow.data.Progress
 import com.cloudinary.android.MediaManager
@@ -23,6 +24,7 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -178,7 +180,7 @@ class PlantPlanViewModel : ViewModel() {
                 val prompt = """
                     Kamu adalah ahli agronomi yang berpengalaman dalam mendiagnosis penyakit tanaman berdasarkan kondisi tanaman nya.
 
-                    Tugasmu adalah mengidentifikasi tanaman berdasarkan deskripsi atau data yang diberikan. Tanamannya adalah $plant. Deskripsikanlah kondisi tanaman tersebut. Jika tanaman tersebut buah/ sayur maka tolong beri tahu apakah tanaman tersebut sudah siap panen atau belum.  
+                    Tugasmu adalah mengidentifikasi tanaman berdasarkan deskripsi atau data yang diberikan. Tanamannya adalah $plant. Deskripsikanlah kondisi tanaman tersebut. Jika tanaman tersebut buah/ sayur maka tolong beri tahu apakah tanaman tersebut sudah siap panen atau belum. Jika sudah siap panen, tolong beritahu user di dalam atribut kondisi.   
                     Jawab **dalam format JSON**, dengan dua bagian:
                     1. "title": berupa judul
                     2. "response": berupa teks HTML yang berisi:
@@ -201,24 +203,43 @@ class PlantPlanViewModel : ViewModel() {
 
                 val content = content { text(prompt) }
                 val response = gemini.generateContent(content)
-                val jsonStr = response.text ?: throw IllegalStateException("Empty response")
-                val json = JSONObject(jsonStr)
+                val jsonStr = response.text?.trim() ?: throw IllegalStateException("Empty response from Gemini")
+                Log.d("progress check", "Received Gemini response: $jsonStr")
 
-                val title = json.getString("title")
-                val htmlResponse = json.getString("response")
-                val condition = json.getString("kondisi")
+                // Hapus markup markdown (```json dan ```)
+                val cleanedJsonStr = jsonStr
+                    .replace("```json", "")
+                    .replace("```", "")
+                    .trim()
 
-                val progress = Progress(
-                    id = "",
-                    plantPlanId = plantPlanId,
-                    day = day,
-                    imageUrl = imageUrl,
-                    response = htmlResponse,
-                    condition = condition,
-                    createdAt = Timestamp.now()
-                )
-                _progressResult.postValue(progress)
-                _error.postValue(null)
+                Log.d("AIGrowViewModel", "Cleaned JSON response: $cleanedJsonStr")
+
+                // Validasi JSON
+                if (cleanedJsonStr.isEmpty() || cleanedJsonStr == "{}") {
+                    throw IllegalStateException("Invalid JSON response from Gemini")
+                }
+
+                try {
+                    val json = JSONObject(cleanedJsonStr)
+                    val title = json.optString("title", "Diagnosa Tanaman")
+                    val htmlResponse = json.optString("response", "<p>Tidak ada respons</p>")
+                    val kondisi = json.optString("kondisi", "tidak_diketahui")
+
+                    val progress = Progress(
+                        id = "",
+                        day = day,
+                        response = htmlResponse,
+                        condition = kondisi,
+                        imageUrl = imageUrl,
+                        createdAt = Timestamp.now(),
+                        plantPlanId = plantPlanId,
+                    )
+                    _progressResult.postValue(progress)
+                    _error.postValue(null)
+                } catch (e: JSONException) {
+                    Log.e("AIGrowViewModel", "JSON parsing error: ${e.message}", e)
+                    _error.postValue("Gagal memproses respons AI: ${e.message}")
+                }
             } catch (e: Exception) {
                 _error.postValue(e.message ?: "Gemini error")
                 Log.e("plant plan vm analyze progress", e.message.toString())
